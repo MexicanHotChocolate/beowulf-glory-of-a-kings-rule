@@ -674,6 +674,24 @@ img, video, canvas { -webkit-user-drag: none; }
   box-shadow: 0 0 34px rgba(255, 43, 214, 0.28), inset 0 0 24px rgba(0, 240, 255, 0.06); perspective: 600px;
 }
 .club__lead-k { color: #ff7ae6; letter-spacing: 0.24em; }
+/* Sonny's LinkedIn: a small logo beside the card, an arrow pointing back at the statement */
+.club__li {
+  position: absolute; left: calc(100% + 14px); top: 50%; transform: translateY(-50%); visibility: hidden;
+  display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 8px; row-gap: 7px;
+  color: #7ff6ff; text-decoration: none; pointer-events: auto; cursor: pointer;
+}
+.club__li-arrow { width: 34px; height: 15px; filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.7)); animation: li-nudge 1.6s ease-in-out infinite; }
+.club__li-logo {
+  width: 46px; height: 46px; border-radius: 9px; background: #0a66c2; display: grid; place-items: center;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25), 0 0 22px rgba(10, 102, 194, 0.85);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease); animation: li-glow 2.4s ease-in-out infinite;
+}
+.club__li-logo svg { width: 26px; height: 26px; }
+.club__li-k { grid-column: 2; justify-self: center; font-size: 10px; letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.78); white-space: nowrap; }
+.club__li:hover .club__li-logo, .club__li:focus-visible .club__li-logo { transform: scale(1.1) rotate(-4deg); box-shadow: 0 0 0 2px #fff, 0 0 34px rgba(10, 102, 194, 1); }
+.club__li:focus-visible { outline: none; }
+@keyframes li-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+@keyframes li-glow { 0%, 100% { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25), 0 0 16px rgba(10, 102, 194, 0.6); } 50% { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 30px rgba(10, 102, 194, 1); } }
 .club__lead-name { margin: 8px 0 10px; padding: 0.06em 4px 0.06em 0; white-space: nowrap; font-family: "Unbounded", var(--sans); font-weight: 900; font-size: clamp(1.7rem, 2.7vw, 3rem); line-height: 1.04; letter-spacing: -0.02em;
   text-shadow: 3px 0 rgba(255, 43, 214, 0.9), -3px 0 rgba(0, 240, 255, 0.9), 0 0 26px rgba(255, 43, 214, 0.6); }
 .club__lead-role { color: #7ff6ff; letter-spacing: 0.12em; line-height: 1.5; margin-bottom: 12px; }

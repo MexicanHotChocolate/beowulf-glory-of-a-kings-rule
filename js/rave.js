@@ -487,6 +487,12 @@ export class Ending {
         .fromTo(chars, { yPercent: 110, opacity: 0, rotateX: -80 }, { yPercent: 0, opacity: 1, rotateX: 0, duration: 0.9, ease: "expo.out", stagger: 0.035 }, 0.15)
         .fromTo(lead.querySelectorAll(".club__lead-k, .club__lead-role, .club__lead-statement"), { y: 14, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.8, ease: "expo.out", stagger: 0.12 }, 0.45);
+      // two seconds into the club, Sonny's LinkedIn slides out from behind the card
+      const li = lead.querySelector(".club__li");
+      if (li) {
+        gsap.set(li, { autoAlpha: 0, x: -24 });
+        gsap.to(li, { autoAlpha: 1, x: 0, duration: 0.9, ease: "expo.out", delay: 2.0 });
+      }
     }
     const items = [...this.clubEl.querySelectorAll(".club__credit")];
     if (!items.length || this.creditsTl) return;
