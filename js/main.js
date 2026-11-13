@@ -450,7 +450,6 @@ function intro() {
     { yPercent: 125, rotateX: -85, opacity: 0, transformOrigin: "50% 100% -30px", duration: 1.7, ease: "expo.out", stagger: 0.04 }, 0.55);
   tl.from(split(document.querySelector(".hero__lede")).words, { yPercent: 115, opacity: 0, duration: 1.3, ease: "expo.out", stagger: 0.018 }, 1.05);
   tl.fromTo(".hero__sub", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: "expo.out" }, 1.3);
-  tl.fromTo(".hero__cta", { y: 16, scale: 0.85, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.1, ease: "expo.out" }, 1.45);
   tl.fromTo(".hero__k", { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, 1.5);
   tl.from(split(document.querySelector(".claim__text")).words, { yPercent: 115, opacity: 0, duration: 1.1, ease: "expo.out", stagger: 0.006 }, 1.55);
   tl.fromTo(".nav", { y: -26, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: "expo.out" }, 1.8);

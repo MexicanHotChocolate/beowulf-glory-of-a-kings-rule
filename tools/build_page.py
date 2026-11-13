@@ -411,7 +411,6 @@ def page():
           </h1>
           <p class="hero__lede">{esc(QUESTION)}</p>
           <p class="hero__sub">{esc(SUBQUESTION)}</p>
-          <a class="pill pill--light mono hero__cta" href="#guide">Start <span aria-hidden="true">&rarr;</span></a>
         </div>
         <div class="hero__lower">
           <p class="hero__k mono">Our thesis</p>
