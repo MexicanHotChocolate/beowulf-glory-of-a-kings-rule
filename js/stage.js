@@ -261,7 +261,7 @@ export class Stage {
     this.camera.position.set(0, 0, H / 2 / Math.tan(THREE.MathUtils.degToRad(FOV / 2)));
     this.camera.updateProjectionMatrix();
     this.composite.uniforms.uRes.value.set(W * this.dpr, H * this.dpr);
-    if (this.flight?.ready) {
+    if (this.flight?.ready && this.flight.L) {
       const ev = this.flight.endView();
       this.composite.uniforms.uEndBasis.value.copy(ev.basis);
       this.composite.uniforms.uNightYaw.value = ev.yaw;

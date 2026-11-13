@@ -522,7 +522,7 @@ def page():
         <div class="club__controls">
           <button class="club__btn mono" type="button" data-act="mute">Mute</button>
           <button class="club__btn mono" type="button" data-act="confetti">More confetti</button>
-          <button class="club__btn mono" type="button" data-act="top">Back to the top</button>
+          <button class="club__btn mono" type="button" data-act="top">Start over</button>
         </div>
       </div>
     </section>

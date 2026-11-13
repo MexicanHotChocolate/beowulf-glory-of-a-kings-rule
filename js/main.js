@@ -7,12 +7,17 @@ import { STOPS, UNITS, UNIT_VH, APPROACH, arriveU, leaveU } from "./flight.js";
 import { split, revealHeading, revealWords, revealImage, cursor, magnetic } from "./motion.js";
 import { BraidMap } from "./map.js";
 import { MapUI, readMapData } from "./map-ui.js";
+import { sfx } from "./sfx.js";
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
 gsap.registerPlugin(ScrollTrigger);
 
 const root = document.documentElement;
+// Nothing in the exhibit can be copied, cut, pasted, dragged out or right-clicked.
+for (const ev of ["copy", "cut", "paste", "contextmenu", "dragstart", "selectstart"]) {
+  document.addEventListener(ev, (e) => e.preventDefault());
+}
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if (reduceMotion) document.documentElement.classList.add("reduce-motion");
 const isMobile = () => window.innerWidth < 700;
@@ -81,6 +86,7 @@ async function openGate() {
   // underneath as soon as the burn does.
   gateEl.classList.add("is-leaving");
   await gate.exit();
+  sfx.fire();
   root.classList.remove("is-gated");
   lenis?.start();
   gate.burnt.then(() => {
@@ -377,10 +383,26 @@ const beats = [...document.querySelectorAll(".beat")].map((el) => {
   return { el, tin, on: false };
 });
 const sm = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+// Quiet sounds as the camera moves on, forward only: air between scenes, the plunge into the
+// sea after passage 01, the rip through passage 02.
+let sfxU = null;
+function flightSounds(u) {
+  const prev = sfxU;
+  sfxU = u;
+  if (prev === null || !(u > prev) || u - prev > 0.3) return;
+  const crossed = (x) => prev < x && u >= x;
+  for (let k = 0; k < STOPS.length - 1; k++) {
+    const into = STOPS[k + 1].into;
+    if (crossed(leaveU(k))) into === "rip" ? sfx.rip() : sfx.whoosh();
+    if (into === "sea" && crossed(leaveU(k) + 0.12)) sfx.splash();
+  }
+}
+
 function updateFlightDom() {
   const f = stage?.flight;
   if (!f?.ready) return;
   const u = f.u, n = STOPS.length;
+  flightSounds(u);
   stopMotion.forEach((s, k) => {
     const pin = reduceMotion ? (f.activeStop() === k ? 1 : 0) : sm(arriveU(k) - 0.17, arriveU(k) + 0.05, u);
     const pout = reduceMotion ? 0 : sm(leaveU(k) - 0.05, leaveU(k) + 0.09, u);

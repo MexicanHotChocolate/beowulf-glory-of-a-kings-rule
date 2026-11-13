@@ -1062,7 +1062,7 @@ export class Flight {
   setPre(p) { this.pre = p; }
   inPre() { return this.pre < 1 && this.u <= -APPROACH + 1e-4; }
 
-  isActive() { return this.ready && (this.pre > 0.002 || this.u > -APPROACH + 0.01) && this.u < UNITS - 0.002; }
+  isActive() { return this.ready && !!this.L && (this.pre > 0.002 || this.u > -APPROACH + 0.01) && this.u < UNITS - 0.002; }
 
   /* For the sea crossing in the composite: 0..1 while it is under way, 0 otherwise. */
   sea() {
@@ -1123,14 +1123,14 @@ export class Flight {
     this.camera.rotation.set(cam.pitch + m.y * 0.015, cam.yaw - m.x * 0.025, cam.roll + Math.sin(u * 1.1) * 0.005, "YXZ");
     const right = V(1, 0, 0).applyEuler(this.camera.rotation), up = V(0, 1, 0).applyEuler(this.camera.rotation);
     this.camera.position.copy(cam.pos).addScaledVector(right, m.x * L.W * 0.022).addScaledVector(up, -m.y * L.H * 0.02);
-    // The fight shakes the hall: small jolts while you read, a hard shake as it tears.
+    // The painting tears: one short, soft shudder as it goes (the camera holds still while you read).
     const tk = STOPS.findIndex((s) => s.plates.some((d) => d.tear));
     if (tk >= 0) {
-      const rest = smooth(arriveU(tk) - 0.1, arriveU(tk) + 0.05, u) * (1 - smooth(leaveU(tk) - 0.1, leaveU(tk), u));
-      const rip = smooth(leaveU(tk) - 0.08, leaveU(tk) - 0.02, u) * (1 - smooth(leaveU(tk) + 0.06, leaveU(tk) + 0.16, u));
-      const jolt = Math.pow(Math.max(0, Math.sin(time * 2.3)), 24);
-      const amp = rest * jolt * 5 + rip * 9;
-      this.camera.position.addScaledVector(right, (Math.sin(time * 71) + Math.sin(time * 37)) * amp).addScaledVector(up, (Math.cos(time * 63) + Math.sin(time * 29)) * amp);
+      const rip = smooth(leaveU(tk) - 0.06, leaveU(tk) - 0.02, u) * (1 - smooth(leaveU(tk), leaveU(tk) + 0.08, u));
+      if (rip > 0) {
+        const amp = rip * 3;
+        this.camera.position.addScaledVector(right, Math.sin(time * 23) * amp).addScaledVector(up, Math.cos(time * 19) * amp);
+      }
     }
     this.camera.updateMatrixWorld(true);
     this.camZ = this.camera.position.z;

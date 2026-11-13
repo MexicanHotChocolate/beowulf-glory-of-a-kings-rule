@@ -587,7 +587,10 @@ p { margin: 0; }
 .gate__checks li { opacity: 0; transform: translateY(4px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
 .gate__checks li.is-on { opacity: 1; transform: none; }
 .gate__checks b { font-weight: 500; color: var(--gold); }
-html.is-gated, html.is-gated body { overflow: hidden; }
+html.is-gated, html.is-gated body, html.club-locked, html.club-locked body { overflow: hidden; }
+/* nothing in the exhibit can be selected or copied */
+html { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+img, video, canvas { -webkit-user-drag: none; }
 
 /* ---------- Works Cited and the end (on cream, like the labels) ---------- */
 .cited, .ending { position: relative; z-index: 2; color: var(--ink); padding: 14vh var(--gutter); }

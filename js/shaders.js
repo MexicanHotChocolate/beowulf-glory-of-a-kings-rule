@@ -386,7 +386,7 @@ export const compositeFrag = /* glsl */ `
     // Crossing the sea: the water rises over the camera, you go under (rippling light,
     // shafts from above, bubbles), then break the surface into the next scene.
     if (uSea > 0.0 && uSea < 1.0) {
-      float rise = smoothstep(0.0, 0.36, uSea), fall = smoothstep(0.64, 1.0, uSea);
+      float rise = smoothstep(0.0, 0.3, uSea), fall = smoothstep(0.52, 0.94, uSea);
       float level = mix(mix(-0.2, 1.25, rise), -0.25, fall)
                   + sin(vUv.x * 17.0 + uTime * 2.3) * 0.014 + sin(vUv.x * 43.0 - uTime * 3.4) * 0.006;
       float under = smoothstep(level + 0.004, level - 0.004, vUv.y);
@@ -394,12 +394,19 @@ export const compositeFrag = /* glsl */ `
         vec2 wob = vec2(sin(vUv.y * 32.0 + uTime * 2.1), cos(vUv.x * 27.0 + uTime * 1.8)) * 0.007;
         vec4 fw = uFlight > 0.5 ? texture2D(tFlight, vUv + wob) * reveal : vec4(0.0);
         vec3 seen = vec3(0.01, 0.07, 0.11) * (1.0 - fw.a) + fw.rgb;     // open water where no picture is
-        vec3 uw = mix(seen, vec3(0.02, 0.15, 0.25), 0.6 + 0.2 * (1.0 - vUv.y));
+        // the water tints what you see through it (paintings ahead stay visible), deeper is darker
+        vec3 uw = mix(seen, mix(vec3(0.01, 0.06, 0.12), vec3(0.04, 0.22, 0.32), vUv.y), 0.42 + 0.22 * (1.0 - vUv.y));
         vec2 cp = vUv * vec2(uRes.x / uRes.y, 1.0) * 5.0;
         float c1 = abs(sin(cp.x * 1.3 + fbm(cp * 0.5 + uTime * 0.22) * 6.0));
         float c2 = abs(sin(cp.y * 1.7 + fbm(cp * 0.6 - uTime * 0.18) * 6.0));
-        uw += vec3(0.45, 0.8, 0.85) * pow(1.0 - min(c1, c2), 10.0) * 0.09 * vUv.y * smoothstep(0.3, 0.7, fbm(cp * 0.3 + uTime * 0.1));
-        uw += vec3(0.4, 0.75, 0.8) * pow(max(0.0, sin(vUv.x * 11.0 + fbm(vec2(vUv.x * 2.0, uTime * 0.15)) * 5.0)), 5.0) * smoothstep(0.2, 1.0, vUv.y) * 0.2;
+        float caustic = pow(1.0 - min(c1, c2), 10.0) * smoothstep(0.3, 0.7, fbm(cp * 0.3 + uTime * 0.1));
+        uw += vec3(0.45, 0.8, 0.85) * caustic * 0.14 * vUv.y;
+        // the surface overhead, bright and moving, seen from below
+        uw += vec3(0.55, 0.85, 0.9) * smoothstep(0.72, 1.0, vUv.y) * (0.16 + 0.3 * caustic);
+        // slanted shafts of light from the surface, fading with depth
+        float sx = vUv.x + (1.0 - vUv.y) * 0.32;
+        float shaft = pow(max(0.0, sin(sx * 9.0 + fbm(vec2(sx * 2.0, uTime * 0.15)) * 5.0)), 6.0);
+        uw += vec3(0.4, 0.75, 0.8) * shaft * smoothstep(0.1, 1.0, vUv.y) * 0.3;
         // bubbles: each column rises at its own speed and each bubble sits anywhere in its cell,
         // so they never line up into a grid
         float ax = vUv.x * uRes.x / uRes.y * 11.0, colId = floor(ax);

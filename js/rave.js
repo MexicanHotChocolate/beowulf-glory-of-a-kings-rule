@@ -464,6 +464,7 @@ export class Ending {
     this.listen();
     this.fire(700);
     this.credits();
+    this.lockClub();
   }
 
   /* Who did what, one at a time: the name builds letter by letter, the job under it. */
@@ -529,9 +530,26 @@ export class Ending {
     } else if (what === "confetti") {
       this.fire(220);
     } else if (what === "top") {
+      // no scrolling back up out of the club: this starts the exhibit over from the Enter screen
       this.pauseAll();
-      this.lenis ? this.lenis.scrollTo(0, { duration: 3.2 }) : window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0);
+      location.href = location.pathname;
     }
+  }
+
+  /* Once you are in the club you stay there: it settles to fill the screen and scrolling stops. */
+  lockClub() {
+    if (this.locked) return;
+    this.locked = true;
+    const top = () => this.clubEl.getBoundingClientRect().top + window.scrollY;
+    const lock = () => {
+      this.lenis?.stop();
+      document.documentElement.classList.add("club-locked");
+      window.addEventListener("scroll", () => { const y = top(); if (Math.abs(window.scrollY - y) > 1) window.scrollTo(0, y); }, { passive: true });
+    };
+    if (this.lenis) this.lenis.scrollTo(top(), { duration: 0.7, lock: true, force: true, onComplete: lock });
+    else { window.scrollTo(0, top()); lock(); }
+    setTimeout(lock, 900);
   }
 
   /* The song drives the lights: bass energy from an analyser, or a steady 128 bpm. */
