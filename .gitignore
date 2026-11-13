@@ -1,0 +1,14 @@
+# private notes, the teacher's rubric, reference videos and working docs stay off GitHub
+user submit/
+docs/
+.claude/
+CLAUDE_REVIEW.md
+RULES.md
+WRITING_STYLE_GUIDE.md
+BLOCK_BY_BLOCK_PLAN.md
+__pycache__/
+*.pyc
+*.onnx
+.vercel
+.DS_Store
+Thumbs.db
